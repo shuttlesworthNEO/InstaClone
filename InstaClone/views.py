@@ -38,8 +38,6 @@ def login_view(request):
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-
-            print username, password
             user = UserModel.objects.filter(username=username).first()
 
             if user:
@@ -51,7 +49,6 @@ def login_view(request):
                     token = SessionToken(user=user)
                     token.create_token()
                     token.save()
-                    print token.session_token
                     response = redirect('feed/')
                     response.set_cookie(key='session_token', value=token.session_token)
                     return response

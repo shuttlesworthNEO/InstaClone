@@ -16,10 +16,6 @@ class UserModel(models.Model):
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
 
-class LoginModel(models.Model):
-	username = models.CharField(max_length=120)
-	password = models.CharField(max_length=40)
-
 class SessionToken(models.Model):
 	user = models.ForeignKey(UserModel)
 	session_token = models.CharField(max_length=255)
