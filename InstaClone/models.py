@@ -24,14 +24,14 @@ class LoginModel(models.Model):
 	password = models.CharField(max_length=40)
 
 class SessionToken(models.Model):
-	user = models.ForeignKey(User)
+	user = models.ForeignKey(UserModel)
 	session_token = models.CharField(max_length=255)
 	last_request_on = models.DateTimeField(auto_now=True)
 	created_on = models.DateTimeField(auto_now_add=True)
 	is_valid = models.BooleanField(default=True)
 
 	def create_token(self):
-		self.access_token = uuid.uuid4()
+		self.session_token = uuid.uuid4()
 
 
 

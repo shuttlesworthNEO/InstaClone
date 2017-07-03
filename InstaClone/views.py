@@ -20,9 +20,6 @@ def signup_view(request):
             name = form.cleaned_data['name']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            #Hashing the password
-            password = make_password(password)
-
             #saving data to DB
             user = UserModel(name=name, password=make_password(password), email=email, username=username)
             user.save()
@@ -46,13 +43,17 @@ def login_view(request):
 
             if user:
                 # Check for the password
+                print make_password(password), user.password
                 if not check_password(password, user.password):
                     dict['message'] = 'Incorrect Password! Please try again!'
                 else:
                     token = SessionToken(user=user)
                     token.create_token()
                     token.save()
-                    return redirect('feed/', token.objects.filter(user=user).first())
+                    print token.session_token
+                    response = redirect('feed/')
+                    response.set_cookie(key='session_token', value=token.session_token)
+                    return response
     else:
         form = LoginForm()
 
