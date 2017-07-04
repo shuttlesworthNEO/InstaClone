@@ -33,6 +33,14 @@ class PostModel(models.Model):
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
 
+class LikeCommentModel(models.Model):
+	user = models.ForeignKey(UserModel)
+	post = models.ForeignKey(PostModel)
+	like = models.BooleanField(default=False)
+	comment = models.CharField(max_length=240)
+	created_on = models.DateTimeField(auto_now_add=True)
+	updated_on = models.DateTimeField(auto_now=True)
+
 
 
 

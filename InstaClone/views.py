@@ -10,9 +10,9 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from datetime import timedelta
 from django.utils import timezone
 
-
-
-
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # Create your views here.
 
@@ -77,6 +77,7 @@ def post_view(request):
             if form.is_valid():
                 image = form.cleaned_data.get('image')
                 caption = form.cleaned_data.get('caption')
+
                 post = PostModel(user=user, image=image, caption=caption)
                 post.save()
                 return redirect('/feed/')
@@ -85,6 +86,13 @@ def post_view(request):
         return render(request, 'post.html', {'form' : form})
     else:
         return redirect('/login/')
+
+def like_view(request):
+    user = check_validation(request)
+    if user:
+        image =
+        if request.method == "POST":
+
 
 #For validating the session
 def check_validation(request):
