@@ -26,6 +26,13 @@ class SessionToken(models.Model):
 	def create_token(self):
 		self.session_token = uuid.uuid4()
 
+class PostModel(models.Model):
+	user = models.ForeignKey(UserModel)
+	image = models.FileField(upload_to='user_images')
+	caption = models.CharField(max_length=240)
+	created_on = models.DateTimeField(auto_now_add=True)
+	updated_on = models.DateTimeField(auto_now=True)
+
 
 
 

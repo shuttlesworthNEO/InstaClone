@@ -1,6 +1,5 @@
 from django import forms
-from django.forms import ModelForm
-from models import UserModel
+from models import UserModel, PostModel
 from django.contrib.auth import authenticate, login, logout, get_user_model
 
 class SignUpForm(forms.ModelForm):
@@ -8,7 +7,12 @@ class SignUpForm(forms.ModelForm):
         model = UserModel
         fields=['email','username','name','password']
 
-class LoginForm(ModelForm):
+class LoginForm(forms.ModelForm):
     class Meta:
         model = UserModel
         fields = ['username', 'password']
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = PostModel
+        fields=['image', 'caption']
