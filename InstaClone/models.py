@@ -38,7 +38,10 @@ class PostModel(models.Model):
 		return LikeModel.objects.filter(user=current_user, post=self).exists()
 
 	def like_count(self):
-		return LikeModel.objects.count
+		return len(LikeModel.objects.filter(post=self))
+
+	def get_comments(self):
+		return CommentModel.objects.filter(post=self)
 
 class LikeModel(models.Model):
 	user = models.ForeignKey(UserModel)

@@ -66,12 +66,20 @@ def feed_view(request):
     user = check_validation(request)
     if user:
 
-        feeds = PostModel.objects.all().order_by('created_on')
-        # TODO 1: DETERMINE IF CURRENT USER HAS LIKED ON EACH POST
-        # TODO 2: GET TOTAL LIKES ON EACH POST
-        # TODO 3: GET ALL COMMENTS FOR EACH POST
+        posts = PostModel.objects.all().order_by('created_on')
 
-        return render(request, 'feed.html', {feeds: feeds})
+        feeds = []
+
+        for post in posts:
+            feeds.append({
+                'post': post,
+                'like_count': post.like_count(),
+                'has_liked': post.has_liked(),
+                'comments': post.get_comments(),
+                'like_form': LikeForm(),
+                'comment_form': CommentForm()
+            })
+        return render(request, 'feed.html', {'feeds': feeds})
     else:
 
         return redirect('/login/')
@@ -95,7 +103,6 @@ def post_view(request):
     else:
         return redirect('/login/')
 
-<<<<<<< HEAD
 
 def like_view(request):
     user = check_validation(request)
@@ -131,13 +138,7 @@ def comment_view(request):
     else:
         return redirect('/login')
 
-=======
-def like_view(request):
-    user = check_validation(request)
-    if user:
-        image =
-        if request.method == "POST":
->>>>>>> 737bcc28e0d2cfb27558a4a70c6b497b33c8f6e3
+
 
 
 #For validating the session
