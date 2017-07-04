@@ -2,6 +2,7 @@ from django import forms
 from models import UserModel, PostModel, LikeModel, CommentModel
 from django.contrib.auth import authenticate, login, logout, get_user_model
 
+
 class SignUpForm(forms.ModelForm):
     class Meta:
         model = UserModel

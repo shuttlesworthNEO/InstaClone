@@ -33,6 +33,12 @@ class PostModel(models.Model):
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
 
+	def has_liked(self, current_user):
+
+		return LikeModel.objects.filter(user=current_user, post=self).exists()
+
+	def like_count(self):
+		return LikeModel.objects.count
 
 class LikeModel(models.Model):
 	user = models.ForeignKey(UserModel)
