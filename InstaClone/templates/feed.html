@@ -10,5 +10,11 @@
         {% csrf_token %}
         <input type="submit" class="btn-default btn" value="Create Post">
     </form>
+
+    {% for feed in feeds %}
+        <h1>{{ feed.user.username }}</h1>
+        <img src="{{ feed.image }}" />
+        <h3>{{ feed.caption }}</h3>
+    {% endfor %}
 </body>
 </html>
