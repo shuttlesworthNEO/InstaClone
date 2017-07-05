@@ -4,25 +4,12 @@ from __future__ import unicode_literals
 from django.shortcuts import render, redirect
 from forms import SignUpForm, LoginForm, PostForm, LikeForm, CommentForm
 from models import UserModel, SessionToken, PostModel, LikeModel, CommentModel
-from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password, check_password
-from django.contrib.auth import authenticate, login, logout, get_user_model
 from datetime import timedelta
 from django.utils import timezone
 from mysite.settings import BASE_DIR
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
 
-import sys
-sys.setdefaultencoding('UTF8')
-print sys.getdefaultencoding()
-
-cloudinary.config(
-  cloud_name = "shuttlesworthneo",
-  api_key = "191717648926425",
-  api_secret = "aNwFm88gKq1dq5LdvCy8VRhU-ZA"
-)
+from imgurpython import ImgurClient
 
 # Create your views here.
 
@@ -72,6 +59,33 @@ def login_view(request):
     dict['form'] = form
     return render(request, 'login.html', dict)
 
+def post_view(request):
+    user = check_validation(request)
+
+    if user:
+        if request.method == 'POST':
+            form = PostForm(request.POST, request.FILES)
+            if form.is_valid():
+                image = form.cleaned_data.get('image')
+                caption = form.cleaned_data.get('caption')
+                post = PostModel(user=user, image=image, caption=caption)
+                post.save()
+
+                path = str(BASE_DIR + post.image.url)
+
+                client = ImgurClient('309da390c4f405d', '0b1e627021ab1fee1c9ae9ed90eaf1565ee0e0f1')
+                post.image_url = client.upload_from_path(path,anon=True)['link']
+                post.save()
+
+                return redirect('/feed/')
+
+        else:
+            form = PostForm()
+        return render(request, 'post.html', {'form' : form})
+    else:
+        return redirect('/login/')
+
+
 def feed_view(request):
     user = check_validation(request)
     if user:
@@ -93,27 +107,7 @@ def feed_view(request):
 
         return redirect('/login/')
 
-def post_view(request):
-    user = check_validation(request)
-    if user:
-        if request.method == 'POST':
-            form = PostForm(request.POST, request.FILES)
-            if form.is_valid():
-                image = form.cleaned_data.get('image')
-                caption = form.cleaned_data.get('caption')
-                post = PostModel(user=user, image=image, caption=caption)
-                post.save()
-                path = str(BASE_DIR + post.image.url)
-                print request.FILES
-                #cloudinary.uploader.upload(request.FILES['file'])
 
-                return redirect('/feed/')
-
-        else:
-            form = PostForm()
-        return render(request, 'post.html', {'form' : form})
-    else:
-        return redirect('/login/')
 
 
 def like_view(request):
