@@ -9,10 +9,20 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from datetime import timedelta
 from django.utils import timezone
-
+from mysite.settings import BASE_DIR
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+
+import sys
+sys.setdefaultencoding('UTF8')
+print sys.getdefaultencoding()
+
+cloudinary.config(
+  cloud_name = "shuttlesworthneo",
+  api_key = "191717648926425",
+  api_secret = "aNwFm88gKq1dq5LdvCy8VRhU-ZA"
+)
 
 # Create your views here.
 
@@ -67,14 +77,13 @@ def feed_view(request):
     if user:
 
         posts = PostModel.objects.all().order_by('created_on')
-
         feeds = []
 
         for post in posts:
             feeds.append({
                 'post': post,
                 'like_count': post.like_count(),
-                'has_liked': post.has_liked(),
+                'has_liked': post.has_liked(user),
                 'comments': post.get_comments(),
                 'like_form': LikeForm(),
                 'comment_form': CommentForm()
@@ -90,13 +99,16 @@ def post_view(request):
         if request.method == 'POST':
             form = PostForm(request.POST, request.FILES)
             if form.is_valid():
-                # TODO: ADD CLOUDINARY
                 image = form.cleaned_data.get('image')
                 caption = form.cleaned_data.get('caption')
-
                 post = PostModel(user=user, image=image, caption=caption)
                 post.save()
+                path = str(BASE_DIR + post.image.url)
+                print request.FILES
+                #cloudinary.uploader.upload(request.FILES['file'])
+
                 return redirect('/feed/')
+
         else:
             form = PostForm()
         return render(request, 'post.html', {'form' : form})
