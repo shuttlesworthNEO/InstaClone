@@ -91,18 +91,11 @@ def feed_view(request):
     if user:
 
         posts = PostModel.objects.all().order_by('created_on')
-        feeds = []
 
         for post in posts:
-            feeds.append({
-                'post': post,
-                'like_count': post.like_count(),
-                'has_liked': post.has_liked(user),
-                'comments': post.get_comments(),
-                'like_form': LikeForm(),
-                'comment_form': CommentForm()
-            })
-        return render(request, 'feed.html', {'feeds': feeds})
+            post.current_user = user
+
+        return render(request, 'feed.html', {'posts': posts})
     else:
 
         return redirect('/login/')
@@ -115,12 +108,12 @@ def like_view(request):
     if user and request.method == 'POST':
         form = LikeForm(request.POST)
         if form.is_valid():
-            post_id = form.cleaned_data.get('post')
-            has_already_liked = LikeModel.objects.filter(post_id=post_id, user=user).first()
-            if not has_already_liked:
+            post_id = form.cleaned_data.get('post').id
+            existing_like = LikeModel.objects.filter(post_id=post_id, user=user).first()
+            if not existing_like:
                 LikeModel.objects.create(post_id=post_id, user=user)
             else:
-                has_already_liked.delete()
+                existing_like.delete()
 
             return redirect('/feed/')
 

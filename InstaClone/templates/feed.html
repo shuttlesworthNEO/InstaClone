@@ -12,12 +12,25 @@
         <input type="submit" class="btn-default btn" value="Create Post">
     </form>
 
-    {{ feeds.like_count }}
-    {% load static %}
-    {% for feed in feeds %}
-        <h1>{{ feed.post.user.username }}</h1>
-        <img src="{{ feed.post.image_url }}" />
-        <h3>{{ feed.post.caption }}</h3>
+
+    {% for post in posts %}
+
+
+        <h3> Posted by: {{ post.user.username }}</h3>
+        <img style="display:inline-block; width:350px; height:300px;"
+             src="{{ post.image_url }}" />
+        <span  style="display:inline-block;">{{ post.caption }}</span><br/><br/>
+        <div style="display:inline-block">
+            {{ post.like_count }} like this
+        </div>
+        <div style="display:inline-block">
+            <form method="POST" action="/like/">
+              {% csrf_token %}
+              <input type="hidden" name="post" value="{{ post.id }}" />
+              <input type="submit" class="btn btn-default" value="Like">
+            </form>
+        </div>
+
     {% endfor %}
 </body>
 </html>

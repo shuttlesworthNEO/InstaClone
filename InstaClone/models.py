@@ -33,14 +33,17 @@ class PostModel(models.Model):
 	caption = models.CharField(max_length=240)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
+	current_user = None
 
-	def has_liked(self, current_user):
+	@property
+	def has_liked(self):
+		return LikeModel.objects.filter(user=self.current_user, post=self).exists()
 
-		return LikeModel.objects.filter(user=current_user, post=self).exists()
-
+	@property
 	def like_count(self):
 		return len(LikeModel.objects.filter(post=self))
 
+	@property
 	def get_comments(self):
 		return CommentModel.objects.filter(post=self)
 
