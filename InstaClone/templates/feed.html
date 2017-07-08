@@ -28,7 +28,7 @@
             <form method="POST" action="/like/">
               {% csrf_token %}
               <input type="hidden" name="post" value="{{ post.id }}" />
-                {% if post.button_message %}
+                {% if post.has_liked %}
                 <input type="submit" class="btn btn-default" value="Unlike">
                 {% else %}
                 <input type="submit" class="btn btn-default" value="Like">

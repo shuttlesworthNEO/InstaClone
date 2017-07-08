@@ -33,20 +33,16 @@ class PostModel(models.Model):
 	caption = models.CharField(max_length=240)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
-	comments = None
-	button_message = None
+	has_liked = False
 
-	@property
-	def has_liked(self):
-		return LikeModel.objects.filter(user=self.current_user, post=self).exists()
 
 	@property
 	def like_count(self):
 		return len(LikeModel.objects.filter(post=self))
 
 	@property
-	def get_comments(self):
-		return CommentModel.objects.filter(post=self)
+	def comments(self):
+		return CommentModel.objects.filter(post=self).order_by('-created_on')
 
 class LikeModel(models.Model):
 	user = models.ForeignKey(UserModel)
