@@ -93,7 +93,11 @@ def feed_view(request):
         posts = PostModel.objects.all().order_by('created_on')
 
         for post in posts:
-            post.current_user = user
+            existing_like = LikeModel.objects.filter(post_id=post.id, user=user).first()
+            if not existing_like:
+                post.button_message = 'Like'
+            else:
+                post.button_message = 'Unlike'
 
         return render(request, 'feed.html', {'posts': posts})
     else:

@@ -18,7 +18,7 @@
 
         <h3> Posted by: {{ post.user.username }}</h3>
         <img style="display:inline-block; width:350px; height:300px;"
-             src="{{ post.image_url }}" />
+             src="{{ post.image_url }}" /><br>
         <span  style="display:inline-block;">{{ post.caption }}</span><br/><br/>
         <div style="display:inline-block">
             {{ post.like_count }} like this
@@ -27,7 +27,7 @@
             <form method="POST" action="/like/">
               {% csrf_token %}
               <input type="hidden" name="post" value="{{ post.id }}" />
-              <input type="submit" class="btn btn-default" value="Like">
+              <input type="submit" class="btn btn-default" value="{{ post.button_message }}">
             </form>
         </div>
 
