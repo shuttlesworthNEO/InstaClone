@@ -33,6 +33,7 @@ class PostModel(models.Model):
 	caption = models.CharField(max_length=240)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
+	comments = None
 	button_message = None
 
 	@property

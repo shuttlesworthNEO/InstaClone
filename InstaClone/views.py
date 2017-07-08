@@ -90,14 +90,20 @@ def feed_view(request):
     user = check_validation(request)
     if user:
 
-        posts = PostModel.objects.all().order_by('created_on')
+        posts = PostModel.objects.all().order_by('-created_on',)
 
         for post in posts:
+            comments = CommentModel.objects.filter(post=post).all().order_by('created_on')
+            post.comments = comments
             existing_like = LikeModel.objects.filter(post_id=post.id, user=user).first()
             if not existing_like:
-                post.button_message = 'Like'
+                post.button_message = False
             else:
-                post.button_message = 'Unlike'
+                post.button_message = True
+
+
+
+
 
         return render(request, 'feed.html', {'posts': posts})
     else:
@@ -130,9 +136,10 @@ def comment_view(request):
     if user and request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
-            post_id = form.cleaned_data.get('post')
+            post_id = form.cleaned_data.get('post').id
             comment_text = form.cleaned_data.get('comment_text')
-            CommentModel.objects.create(user=user, post_id=post_id, comment_text=comment_text)
+            comment = CommentModel.objects.create(user=user, post_id=post_id, comment_text=comment_text)
+            comment.save()
             # TODO: ADD MESSAGE TO INDICATE SUCCESS
             return redirect('/feed/')
         else:
