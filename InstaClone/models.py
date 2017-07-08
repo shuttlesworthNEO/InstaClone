@@ -42,7 +42,7 @@ class PostModel(models.Model):
 
 	@property
 	def comments(self):
-		return CommentModel.objects.filter(post=self).order_by('-created_on')
+		return CommentModel.objects.filter(post=self).order_by('created_on')
 
 class LikeModel(models.Model):
 	user = models.ForeignKey(UserModel)
